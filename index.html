@@ -227,6 +227,94 @@
   <small>© 2026 Leahjim Prods.</small>
 </footer>
 
-<script src="script.js"></script>
+
+
+<script>
+(function () {
+  const PHONE = "51900844190";
+  const PRICES = {
+    "Esencial - S/350": 350,
+    "Completo - S/490": 490,
+    "Exclusivo - S/700": 700
+  };
+
+  const bases = Array.from(document.querySelectorAll('input[name="base"]'));
+  const extras = Array.from(document.querySelectorAll('.extra-checkbox'));
+  const baseText = document.getElementById('summaryBase');
+  const extrasBox = document.getElementById('summaryExtras');
+  const totalText = document.getElementById('summaryTotal');
+  const whatsappBtn = document.getElementById('sendCustom');
+
+  function getBase() {
+    const checked = bases.find(el => el.checked);
+    return checked ? checked.value : "Esencial - S/350";
+  }
+
+  function getExtras() {
+    return extras.filter(el => el.checked).map(el => ({
+      name: el.dataset.title || el.value,
+      price: Number(el.dataset.price || 0)
+    }));
+  }
+
+  function update() {
+    const base = getBase();
+    const basePrice = PRICES[base] || 350;
+    const selected = getExtras();
+    const extrasTotal = selected.reduce((sum, item) => sum + item.price, 0);
+    const grandTotal = basePrice + extrasTotal;
+
+    baseText.textContent = "Paquete " + base.replace(" - ", " — ");
+
+    if (selected.length === 0) {
+      extrasBox.innerHTML = '<div class="no-extras">Sin extras seleccionados.</div>';
+    } else {
+      extrasBox.innerHTML =
+        selected.map(item =>
+          '<div class="summary-extra-row">' +
+            '<b>+ ' + item.name + '</b>' +
+            '<span>S/' + item.price + '</span>' +
+          '</div>'
+        ).join('') +
+        '<div class="summary-extra-row extras-subtotal">' +
+          '<b>Subtotal de extras</b>' +
+          '<span>S/' + extrasTotal + '</span>' +
+        '</div>';
+    }
+
+    totalText.textContent = "S/" + grandTotal;
+
+    let msg = "Hola, vi la página de 15 años de Leahjim Prods y quiero solicitar esta cobertura:\n\n";
+    msg += "📦 Paquete seleccionado: " + base + "\n\n";
+    msg += "➕ Agregados seleccionados:\n";
+
+    if (selected.length) {
+      selected.forEach(item => {
+        msg += "• " + item.name + " — S/" + item.price + "\n";
+      });
+    } else {
+      msg += "• Ninguno\n";
+    }
+
+    msg += "\nSubtotal de agregados: S/" + extrasTotal;
+    msg += "\n💰 TOTAL: S/" + grandTotal;
+    msg += "\n\n🚗 Movilidad aparte.";
+    msg += "\n\nQuisiera consultar disponibilidad para la fecha de mi evento.";
+
+    whatsappBtn.href = "https://wa.me/" + PHONE + "?text=" + encodeURIComponent(msg);
+  }
+
+  bases.forEach(el => el.addEventListener('change', update));
+  extras.forEach(el => el.addEventListener('change', update));
+
+  // Also listen to clicks as a fallback for some mobile browsers.
+  document.querySelector('.extras').addEventListener('click', function () {
+    setTimeout(update, 0);
+  });
+
+  update();
+})();
+</script>
+
 </body>
 </html>
