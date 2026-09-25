@@ -76,3 +76,82 @@ summary::-webkit-details-marker{display:none}
     touch-action:manipulation;
   }
 }
+
+
+/* ===== FIX FINAL: RESUMEN Y WHATSAPP ===== */
+.selection-info{
+  width:100%;
+  min-width:0;
+}
+.summary{
+  align-items:flex-start;
+}
+.summary-extras{
+  display:block !important;
+  width:100%;
+  margin-top:12px;
+  color:#b8cada;
+  font-size:11px;
+}
+.summary-extra-row{
+  display:flex !important;
+  justify-content:space-between;
+  align-items:center;
+  gap:12px;
+  width:100%;
+  padding:5px 0;
+  border-bottom:1px solid rgba(255,255,255,.05);
+}
+.summary-extra-row b{
+  display:block;
+  color:#dcecf8;
+  font-weight:600;
+}
+.summary-extra-row span{
+  display:block;
+  color:var(--blue);
+  font-weight:800;
+  white-space:nowrap;
+}
+#sendCustom{
+  cursor:pointer;
+  position:relative;
+  z-index:2;
+}
+@media(max-width:600px){
+  .summary{
+    display:block !important;
+    width:100%;
+  }
+  .selection-info{
+    display:block !important;
+    width:100%;
+  }
+  #summaryExtras{
+    display:block !important;
+    min-height:22px;
+    margin:12px 0 0;
+  }
+  .summary-extra-row{
+    display:flex !important;
+  }
+  #sendCustom{
+    display:block;
+    width:100%;
+    margin-top:20px;
+    min-height:48px;
+  }
+}
+
+.custom-whatsapp-btn{
+  border:1px solid #2993dc;
+  background:#0c3451;
+  color:white;
+  padding:14px 18px;
+  border-radius:5px;
+  font-weight:800;
+  font-size:11px;
+  cursor:pointer;
+  text-align:center;
+  display:inline-block;
+}
