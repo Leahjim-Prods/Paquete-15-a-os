@@ -197,3 +197,21 @@ summary::-webkit-details-marker{display:none}
   }
   .extra-price{margin-left:0}
 }
+
+/* RESUMEN DE EXTRAS - FIX INLINE */
+#summaryExtras .summary-extra-row{
+  display:flex !important;
+  justify-content:space-between !important;
+  gap:20px;
+  padding:7px 0;
+  border-bottom:1px solid rgba(255,255,255,.07);
+}
+#summaryExtras .summary-extra-row b{color:#e7f3ff !important}
+#summaryExtras .summary-extra-row span{color:#1597ff !important;font-weight:800}
+#summaryExtras .extras-subtotal{
+  margin-top:6px;
+  padding-top:10px;
+  border-top:1px solid #31516a;
+  border-bottom:0;
+}
+.no-extras{color:#9caebe}
