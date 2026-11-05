@@ -146,11 +146,23 @@
         <span class="step">01</span>
         <div><h3>Elige una base</h3><p>Selecciona el paquete desde el que quieres comenzar.</p></div>
       </div>
-      <div class="base-options">
-        <label><input type="radio" name="base" value="Esencial - S/450" checked><span><b>Esencial</b><small>S/450</small></span></label>
-        <label><input type="radio" name="base" value="Completo - S/600"><span><b>Completo</b><small>S/600</small></span></label>
-        <label><input type="radio" name="base" value="Exclusivo - S/850"><span><b>Exclusivo</b><small>S/850</small></span></label>
-      </div>
+      
+    <div class="base-options">
+      <label>
+        <input type="radio" name="base" value="Esencial" data-price="450" checked>
+        <span><b>Esencial</b><small>S/450</small></span>
+      </label>
+    
+      <label>
+        <input type="radio" name="base" value="Completo" data-price="600">
+        <span><b>Completo</b><small>S/600</small></span>
+      </label>
+    
+      <label>
+        <input type="radio" name="base" value="Exclusivo" data-price="850">
+        <span><b>Exclusivo</b><small>S/850</small></span>
+      </label>
+    </div>
 
       <div class="builder-step second">
         <span class="step">02</span>
@@ -235,90 +247,119 @@
 
 
 <script>
+
 (function () {
   const PHONE = "51900844190";
-  const PRICES = {
-    "Esencial - S/450": 450,
-    "Completo - S/600": 600,
-    "Exclusivo - S/850": 850
-  };
 
-  const bases = Array.from(document.querySelectorAll('input[name="base"]'));
-  const extras = Array.from(document.querySelectorAll('.extra-checkbox'));
-  const baseText = document.getElementById('summaryBase');
-  const extrasBox = document.getElementById('summaryExtras');
-  const totalText = document.getElementById('summaryTotal');
-  const whatsappBtn = document.getElementById('sendCustom');
+  // Trabajamos únicamente dentro del constructor de paquetes.
+  const builder = document.querySelector("#personaliza .builder-box");
 
-  function getBase() {
-    const checked = bases.find(el => el.checked);
-    return checked ? checked.value : "Esencial - S/450";
-  }
+  if (!builder) return;
 
-  function getExtras() {
-    return extras.filter(el => el.checked).map(el => ({
-      name: el.dataset.title || el.value,
-      price: Number(el.dataset.price || 0)
-    }));
-  }
+  const bases = builder.querySelectorAll('input[name="base"]');
+  const extras = builder.querySelectorAll(".extra-checkbox");
+
+  const baseText = builder.querySelector("#summaryBase");
+  const extrasBox = builder.querySelector("#summaryExtras");
+  const totalText = builder.querySelector("#summaryTotal");
+  const whatsappBtn = builder.querySelector("#sendCustom");
 
   function update() {
-    const base = getBase();
-    const basePrice = PRICES[base] || 450;
-    const selected = getExtras();
-    const extrasTotal = selected.reduce((sum, item) => sum + item.price, 0);
+
+    // Obtener el paquete seleccionado y su precio real.
+    const selectedBase = builder.querySelector(
+      'input[name="base"]:checked'
+    );
+
+    const baseName = selectedBase.value;
+    const basePrice = Number(selectedBase.dataset.price);
+
+    // Obtener extras seleccionados.
+    const selectedExtras = Array.from(extras)
+      .filter(extra => extra.checked)
+      .map(extra => ({
+        name: extra.dataset.title || extra.value,
+        price: Number(extra.dataset.price || 0)
+      }));
+
+    // Calcular los totales.
+    const extrasTotal = selectedExtras.reduce(
+      (sum, item) => sum + item.price, 0
+    );
+
     const grandTotal = basePrice + extrasTotal;
 
-    baseText.textContent = "Paquete " + base.replace(" - ", " — ");
+    // Actualizar resumen.
+    baseText.textContent =
+      "Paquete " + baseName + " — S/" + basePrice;
 
-    if (selected.length === 0) {
-      extrasBox.innerHTML = '<div class="no-extras">Sin extras seleccionados.</div>';
+    if (selectedExtras.length === 0) {
+
+      extrasBox.textContent = "Sin extras seleccionados.";
+
     } else {
+
       extrasBox.innerHTML =
-        selected.map(item =>
-          '<div class="summary-extra-row">' +
-            '<b>+ ' + item.name + '</b>' +
-            '<span>S/' + item.price + '</span>' +
-          '</div>'
-        ).join('') +
-        '<div class="summary-extra-row extras-subtotal">' +
-          '<b>Subtotal de extras</b>' +
-          '<span>S/' + extrasTotal + '</span>' +
-        '</div>';
+        selectedExtras.map(item => `
+          <div class="summary-extra-row">
+            <b>+ ${item.name}</b>
+            <span>S/${item.price}</span>
+          </div>
+        `).join("") +
+        `
+          <div class="summary-extra-row extras-subtotal">
+            <b>Subtotal de extras</b>
+            <span>S/${extrasTotal}</span>
+          </div>
+        `;
     }
 
+    // Actualizar total.
     totalText.textContent = "S/" + grandTotal;
 
-    let msg = "Hola, vi la página de 15 años de Leahjim Prods y quiero solicitar esta cobertura:\n\n";
-    msg += "📦 Paquete seleccionado: " + base + "\n\n";
+    // Preparar mensaje de WhatsApp.
+    let msg =
+      "Hola, vi la página de 15 años de Leahjim Prods y quiero solicitar esta cobertura:\n\n";
+
+    msg += `📦 Paquete seleccionado: ${baseName} — S/${basePrice}\n\n`;
+
     msg += "➕ Agregados seleccionados:\n";
 
-    if (selected.length) {
-      selected.forEach(item => {
-        msg += "• " + item.name + " — S/" + item.price + "\n";
+    if (selectedExtras.length > 0) {
+
+      selectedExtras.forEach(item => {
+        msg += `• ${item.name} — S/${item.price}\n`;
       });
+
     } else {
       msg += "• Ninguno\n";
     }
 
-    msg += "\nSubtotal de agregados: S/" + extrasTotal;
-    msg += "\n💰 TOTAL: S/" + grandTotal;
+    msg += `\nSubtotal de agregados: S/${extrasTotal}`;
+    msg += `\n💰 TOTAL: S/${grandTotal}`;
     msg += "\n\n🚗 Movilidad aparte.";
     msg += "\n\nQuisiera consultar disponibilidad para la fecha de mi evento.";
 
-    whatsappBtn.href = "https://wa.me/" + PHONE + "?text=" + encodeURIComponent(msg);
+    whatsappBtn.href =
+      "https://wa.me/" + PHONE + "?text=" +
+      encodeURIComponent(msg);
   }
 
-  bases.forEach(el => el.addEventListener('change', update));
-  extras.forEach(el => el.addEventListener('change', update));
-
-  // Also listen to clicks as a fallback for some mobile browsers.
-  document.querySelector('.extras').addEventListener('click', function () {
-    setTimeout(update, 0);
+  // Escuchar cambios de paquete.
+  bases.forEach(base => {
+    base.addEventListener("change", update);
   });
 
+  // Escuchar cambios de extras.
+  extras.forEach(extra => {
+    extra.addEventListener("change", update);
+  });
+
+  // Inicializar.
   update();
+
 })();
+
 </script>
 
 </body>
