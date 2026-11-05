@@ -208,9 +208,9 @@
       <div class="summary">
         <div class="selection-info">
           <small>TU SELECCIÓN</small>
-          <h3 id="summaryBase">Paquete Esencial — S/350</h3>
+          <h3 id="summaryBase">Paquete Esencial — S/450</h3>
           <div id="summaryExtras" class="summary-extras">Sin extras seleccionados.</div>
-          <p class="summary-total">Total estimado: <strong id="summaryTotal">S/350</strong></p>
+          <p class="summary-total">Total estimado: <strong id="summaryTotal">S/450</strong></p>
         </div>
         <a id="sendCustom" class="custom-whatsapp-btn" href="https://wa.me/51900844190" rel="noopener">Solicitar cotización por WhatsApp</a>
       </div>
@@ -238,9 +238,9 @@
 (function () {
   const PHONE = "51900844190";
   const PRICES = {
-    "Esencial - S/350": 350,
-    "Completo - S/490": 490,
-    "Exclusivo - S/700": 700
+    "Esencial - S/450": 450,
+    "Completo - S/600": 600,
+    "Exclusivo - S/850": 850
   };
 
   const bases = Array.from(document.querySelectorAll('input[name="base"]'));
@@ -252,7 +252,7 @@
 
   function getBase() {
     const checked = bases.find(el => el.checked);
-    return checked ? checked.value : "Esencial - S/350";
+    return checked ? checked.value : "Esencial - S/450";
   }
 
   function getExtras() {
@@ -264,7 +264,7 @@
 
   function update() {
     const base = getBase();
-    const basePrice = PRICES[base] || 350;
+    const basePrice = PRICES[base] || 450;
     const selected = getExtras();
     const extrasTotal = selected.reduce((sum, item) => sum + item.price, 0);
     const grandTotal = basePrice + extrasTotal;
